@@ -1,0 +1,60 @@
+---
+_format_version: "1.1"
+
+services:
+- name: kong-admin
+  url: http://localhost:8001
+
+routes:
+- hosts: []
+  methods: []
+  name: redirect-kong-admin
+  paths:
+  - /
+  preserve_host: false
+  regex_priority: 1
+  service: kong-admin
+  strip_path: true
+
+- hosts: []
+  methods: []
+  name: sliding-window-rate-limiting-route
+  paths:
+  - /sliding-window-rate-limiting
+  preserve_host: false
+  regex_priority: 1
+  service: kong-admin
+  strip_path: true
+  plugins:
+  - name: sliding-window-rate-limiting
+    config:
+      hide_client_headers: false
+      fault_tolerant: true
+      limit_by: header
+      header_name: X-Client-Id
+      limit: 2
+      window_size: 1
+      policy: redis
+      redis_host: redis-server
+      redis_port: 6379
+
+- hosts: []
+  methods: []
+  name: kong-rate-limiting-route
+  paths:
+  - /kong-rate-limiting
+  preserve_host: false
+  regex_priority: 1
+  service: kong-admin
+  strip_path: true
+  plugins:
+  - name: rate-limiting
+    config:
+      hide_client_headers: false
+      fault_tolerant: true
+      limit_by: header
+      header_name: X-Client-Id
+      second: 2
+      policy: redis
+      redis_host: redis-server
+      redis_port: 6379

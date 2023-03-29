@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+
+  myredis:
+    image: redis:5.0.4-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    restart: on-failure
+    stop_signal: SIGKILL
+    networks:
+      - ${NETWORK_NAME}
