@@ -3,7 +3,7 @@ NAME := $(shell ls kong/plugins)
 DIR_NAME=$(shell basename $${PWD})
 UID := $(shell id -u)
 GID := $(shell id -g)
-CONTAINER_NAME := $(shell docker-compose ps 2>/dev/null | grep 8000 | awk '{print $$1}')
+CONTAINER_NAME := $(shell docker compose ps 2>/dev/null | grep 8000 | awk '{print $$1}')
 SUMMARY := $(shell sed -n '/^summary: /s/^summary: //p' README.md)
 export UID GID NAME VERSION
 
@@ -63,18 +63,18 @@ rockspec: ## Create the RockSpec file, parsing the Plugin Name, Version, Depende
 clean: ## Remove artifactory files and take down docker stack.
 	@rm -rf *.rock *.rockspec dist shm kong/plugins/${NAME}/${NAME}
 	@find kong/plugins/${NAME} -type f -iname "*lua~" -exec rm -f {} \;
-	@docker-compose -f ${DOCKER_COMPOSE_FILE} down -v
+	@docker compose -f ${DOCKER_COMPOSE_FILE} down -v
 
 .PHONY: clear
 clear: clean ## Same as clean.
 
 .PHONY: start
-start: validate ## Exec start the docker-compose stack.
-	@docker-compose -f ${DOCKER_COMPOSE_FILE} up -d
+start: validate ## Exec start the docker compose stack.
+	@docker compose -f ${DOCKER_COMPOSE_FILE} up -d
 
 .PHONY: stop
 stop: ## Stop the containers.
-	@docker-compose -f ${DOCKER_COMPOSE_FILE} down
+	@docker compose -f ${DOCKER_COMPOSE_FILE} down
 
 .PHONY: logs
 logs: kong-logs ## Show Kong container logs.
@@ -97,11 +97,11 @@ kong-reload: ## Same as reload.
 .PHONY: restart
 restart: ## Remove Kong container and recreate it.
 	@docker rm -vf $$(docker ps -qf name=${DIR_NAME}-kong-1)
-	@docker-compose -f ${DOCKER_COMPOSE_FILE} up -d
+	@docker compose -f ${DOCKER_COMPOSE_FILE} up -d
 
 .PHONY: truncate-logs
 truncate-logs: ## Needs sudo privileges: truncate Kong Container logs.
-	@sudo truncate -s 0 $$(docker inspect --format='{{.LogPath}}' $(docker-compose ps 2>/dev/null | grep 8000 | awk '{print $1}'))
+	@sudo truncate -s 0 $$(docker inspect --format='{{.LogPath}}' $(docker compose ps 2>/dev/null | grep 8000 | awk '{print $1}'))
 
 .PHONY: reconfigure
 reconfigure: clean start kong-logs ## Shortcut to clean, start, logs.

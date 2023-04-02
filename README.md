@@ -1,8 +1,12 @@
 # Kong Plugin Sliding Window Rate-Limiting
 
+[![Build Status](https://github.com/giovanibrioni/kong-plugin-sliding-window-rate-limiting/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/giovanibrioni/kong-plugin-sliding-window-rate-limiting/actions)
+
 summary: This plugin has the same purpose as the [rate-limiting plugin](https://github.com/Kong/kong/tree/master/kong/plugins/), although but this implementation has better accuracy.
 
-Kong rate-limiting plugin has a race condition problem in addition it works with the fixed window algorithm which is less accurate than the sliding window algorithm, which is the algorithm used here
+Kong rate-limiting plugin has a race condition problem in addition it works with the fixed window algorithm which is less accurate than the sliding window algorithm, which is the algorithm used here.
+
+THis plugin is heavely inspired by the [Pull Request Kong/Kong/PR-8227](https://github.com/Kong/kong/pull/8227).
 
 **NOTE**: window_size is ALWAYS in **seconds**
 
