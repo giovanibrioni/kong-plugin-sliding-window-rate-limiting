@@ -33,7 +33,7 @@ routes:
       limit_by: header
       header_name: X-Client-Id
       limit: 2
-      window_size: 1
+      window_size: 60
       policy: redis
       redis_host: redis-server
       redis_port: 6379

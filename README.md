@@ -8,7 +8,7 @@ Kong rate-limiting plugin has a race condition problem in addition it works with
 
 THis plugin is heavely inspired by the [Pull Request Kong/Kong/PR-8227](https://github.com/Kong/kong/pull/8227).
 
-**NOTE**: window_size is ALWAYS in **seconds**
+**NOTE**: window_size is ALWAYS in **seconds** and work only with redis police.
 
 Fallback rate-limiting can be useful when the regular rules can not be applyed, e.g: Rate-Limiting by header, but the header does not exists in the request (and it would use the requester IP).
 By configuring the Fallback Rate-Limiting it is possible the configure rules like: "Apply _X RPS_ to 'X-Client-Id' or, if 'X-Client-Id' do not exist: _Y RPS_ to 'X-Client-IP'".
@@ -61,7 +61,7 @@ Priority: **901**
 
 ## Plugin Version
 
-Version: **0.1.0**
+Version: **1.0.0**
 
 ## Config
 

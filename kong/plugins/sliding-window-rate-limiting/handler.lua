@@ -18,8 +18,7 @@ local RateLimitingHandler = {}
 
 
 RateLimitingHandler.PRIORITY = 901
-RateLimitingHandler.VERSION = "0.1.0"
-
+RateLimitingHandler.VERSION = "1.0.0"
 
 local function get_identifier(conf)
   local identifier
@@ -61,16 +60,6 @@ local function get_identifier(conf)
   return identifier, false
 end
 
-
-local function get_usage(conf, identifier, window_size)
-  local current_usage, reset, err = policies[conf.policy].usage(conf, identifier, window_size)
-  if err then
-    return nil, nil, err
-  end
-
-  return current_usage, reset
-end
-
 local function get_headers(conf, limit, usage, remaining_time)
   local headers
 
@@ -81,7 +70,7 @@ local function get_headers(conf, limit, usage, remaining_time)
     headers[RATELIMIT_REMAINING] = max(0, limit - usage)
     headers[RATELIMIT_RESET] = remaining_time
   end
-
+  
   return headers
 
 end
@@ -94,9 +83,8 @@ function RateLimitingHandler:access(conf)
   local limit = fallback and conf.fallback_limit or conf.limit
   local window_size = fallback and conf.fallback_window_size or conf.window_size
 
-  local current_usage, remaining_time, err = get_usage(conf, identifier, window_size)
+  local current_usage, remaining_time, err = policies[conf.policy].usage(conf, identifier, window_size, limit)
   if err then
-
     if not fault_tolerant then
       return error(err)
     end
